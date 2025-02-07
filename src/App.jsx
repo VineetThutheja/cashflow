@@ -19,7 +19,7 @@ export default function App() {
       code: searchParams?.get("code"),
       client_id: `${import.meta.env.VITE_CLIENT_ID}`,
       client_secret: `${import.meta.env.VITE_CLIENT_SECRET}`,
-      redirect_uri: `${import.meta.env.VITE_REDIRECT}/`,
+      redirect_uri: `${location?.origin}/`,
       grant_type: "authorization_code",
     };
 
