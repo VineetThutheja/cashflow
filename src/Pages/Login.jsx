@@ -6,7 +6,7 @@ export default function LoginPage() {
       <div className="p-8 bg-white shadow-xl rounded-lg border border-gray-300 text-center max-w-sm w-full animate-fadeIn relative">
         <h1 className="text-3xl font-bold text-gray-800 mb-4 animate-slideDown tracking-wide">Welcome to Sensibull</h1>
         <p className="text-gray-600 mb-6 animate-fadeIn">Your gateway to smarter trading 🚀</p>
-        <a href={`https://api.upstox.com/v2/login/authorization/dialog?client_id=a7561f9a-6929-4820-a8d6-fa024cf2dc17&redirect_uri=${location?.origin}&response=code`} className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:opacity-90 transition-all shadow-md animate-pulse">
+        <a href={`https://api.upstox.com/v2/login/authorization/dialog?client_id=a7561f9a-6929-4820-a8d6-fa024cf2dc17&redirect_uri=${location?.origin}/&response=code`} className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:opacity-90 transition-all shadow-md animate-pulse">
           Login
         </a>
         <div className="absolute -top-6 -right-6 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md animate-spinSlow">
