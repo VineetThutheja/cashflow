@@ -14,13 +14,12 @@ export default function App() {
       accept: "application/json",
       "Content-Type": "application/x-www-form-urlencoded",
     };
-    console.log(import.meta.env.VITE_CLIENT_ID);
     
     const data = {
       code: searchParams?.get("code"),
       client_id: `${import.meta.env.VITE_CLIENT_ID}`,
       client_secret: `${import.meta.env.VITE_CLIENT_SECRET}`,
-      redirect_uri: `${location.origin}/`,
+      redirect_uri: `${import.meta.env.VITE_REDIRECT}/`,
       grant_type: "authorization_code",
     };
 
