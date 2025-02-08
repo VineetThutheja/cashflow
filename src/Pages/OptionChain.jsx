@@ -18,7 +18,7 @@ const INSTRUMENT_OPTIONS = [
 const baseUrl = "https://api.upstox.com/v2";
 
 const limiter = new Bottleneck({
-  minTime: 25, // 200ms delay between requests (5 req/sec)
+  minTime: 50, // 200ms delay between requests (5 req/sec)
   maxConcurrent: 3, // Max 3 requests at a time
 });
 export default function OptionChain() {
@@ -35,9 +35,11 @@ export default function OptionChain() {
   const [optionContract, setOptionContract] = useState();
   const [optionChainMargin, setOptionChainMargin] = useState();
   const [filteredOptionsMargin, setFilteredOptionsMargin] = useState();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [lastClickedTime, setLastClickedTime] = useState(
-    localStorage.getItem("lastClickedTime") ? parseInt(localStorage.getItem("lastClickedTime"), 10) : null
+    localStorage.getItem("lastClickedTime")
+      ? parseInt(localStorage.getItem("lastClickedTime"), 10)
+      : null
   );
   const token = localStorage?.getItem("access_token");
   const contractUrl = "/option/contract";
@@ -72,7 +74,7 @@ export default function OptionChain() {
   }
   async function getOptionChainData() {
     setLoadingChain(true);
-    setError('')
+    setError("");
     const optionChainPromise = (
       instruments === "nifty_50" ? Nifty50 : AllFNO
     )?.map((n50) =>
@@ -120,7 +122,7 @@ export default function OptionChain() {
       .catch((error) => {
         console.error("Error:", error);
         setLoadingChain(false);
-        setError("Something went wrong")
+        setError("Something went wrong");
       });
   }
   async function getOptionChainMargin(options) {
@@ -182,6 +184,8 @@ export default function OptionChain() {
           console.log(error);
           setLastClickedTime(null);
           localStorage.setItem("lastClickedTime", null);
+          setLoadingChain(false);
+          setError("Something went wrong");
         });
     }
   }
@@ -218,7 +222,6 @@ export default function OptionChain() {
           });
           localStorage.setItem("option_contract", JSON.stringify(chainData));
           setOptionContract(chainData);
-         
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -305,7 +308,7 @@ export default function OptionChain() {
               ))}
             </select>
             <button
-              onClick={lastClickedTime?null:getOptionChainData}
+              onClick={lastClickedTime ? null : getOptionChainData}
               className="bg-gray-100 text-gray-700 px-3 py-2 border border-gray-300 rounded-md flex items-center gap-1"
             >
               <RefreshCw size={16} />
@@ -316,7 +319,7 @@ export default function OptionChain() {
             <div className="flex justify-center items-center py-6">
               <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
-          ) : !error?(
+          ) : !error ? (
             <div>
               {filteredOptionsMargin?.map((option, index) => (
                 <div key={index} className="border-b border-gray-200 py-2">
@@ -376,9 +379,11 @@ export default function OptionChain() {
                 </div>
               ))}
             </div>
-          ):<div  className="border-b border-gray-200 py-2">
-            <h3>{error}</h3>
-            </div>}
+          ) : (
+            <div className="border-b border-gray-200 py-2">
+              <h3>{error}</h3>
+            </div>
+          )}
         </>
       )}
     </div>

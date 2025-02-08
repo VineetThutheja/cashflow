@@ -77,7 +77,7 @@
       if (underlyingData) {
         const priceDifference = ((item.strike_price - item.underlying_spot_price) / item.underlying_spot_price) * 100;
         
-        if (item.call_options && priceDifference >= percentageThreshold) {
+        if (item.call_options && priceDifference >= percentageThreshold && item.call_options?.market_data?.ltp>0) {
           callOptions.push({
             ...item.call_options,
             underlying_info: underlyingData,
@@ -87,7 +87,7 @@
             instrument_type: "CE"
           });
         }
-        if (item.put_options && priceDifference <= -percentageThreshold) {
+        if (item.put_options && priceDifference <= -percentageThreshold && item.put_options?.market_data?.ltp>0) {
           putOptions.push({
             ...item.put_options,
             underlying_info: underlyingData,
