@@ -251,7 +251,7 @@ export default function OptionChain() {
   }, [optionChainMargin, activeTab]);
 
   return (
-    <div className="max-w-lg mx-auto p-4 bg-white text-gray-900 shadow-md rounded-md mt-6 border border-gray-200">
+    <div className="container max-w-lg mx-auto p-4 bg-white text-gray-900 shadow-md rounded-md mt-6 border border-gray-200">
       {loading ? (
         <div className="flex justify-center items-center py-6">
           <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -277,12 +277,12 @@ export default function OptionChain() {
             </button>
           </div>
 
-          <div className="mb-4 flex items-center gap-1">
+          <div className="container max-w-lg mb-4 flex items-center gap-1">
             <input
               type="number"
               value={lotSize}
               onChange={(e) => setLotSize(e.target.value)}
-              className="bg-gray-100 text-gray-700 px-3 py-2 border border-gray-300 rounded-md w-20"
+              className="bg-gray-100 text-gray-700 px-3 py-2 border border-gray-300 rounded-md w-15"
               placeholder="Lot Size"
             />
             <select
