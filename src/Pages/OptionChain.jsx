@@ -327,7 +327,7 @@ export default function OptionChain() {
                     onClick={() => toggleAccordion(index)}
                   >
                     <span className="font-medium text-gray-900">
-                      {`${option?.underlying_info?.name} ${option?.strike_price} ${activeTab}  ${option?.expiry}`}
+                      {`${option?.underlying_info?.tradingsymbol} ${option?.strike_price} ${activeTab}  ${option?.expiry}`}
                     </span>
                     <span className="font-medium text-green-600 text-right">
                       MP: ₹
