@@ -241,7 +241,6 @@ export default function OptionChain() {
       getOptionChainMargin([...callOptions, ...putOptions]);
     }
   }, [callOptions, putOptions, optionContract]);
-  console.log("option chain with margin", optionChainMargin);
   useEffect(() => {
     if (optionChainMargin) {
       setFilteredOptionsMargin(
@@ -251,7 +250,7 @@ export default function OptionChain() {
   }, [optionChainMargin, activeTab]);
 
   return (
-    <div className="container max-w-lg mx-auto p-4 bg-white text-gray-900 shadow-md rounded-md mt-6 border border-gray-200">
+    <div className="container max-w-lg mx-auto p-4 bg-white text-gray-900 shadow-md rounded-md border border-gray-200">
       {loading ? (
         <div className="flex justify-center items-center py-6">
           <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
