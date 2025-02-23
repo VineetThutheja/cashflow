@@ -29,18 +29,13 @@ export default function OptionChain() {
   const [instruments, setInstruments] = useState("all_fno");
   const [expiryDates, setExpiryDates] = useState();
   const [expiry, setExpiry] = useState();
-  const [lotSize, setLotSize] = useState(15);
+  const [lotSize, setLotSize] = useState(localStorage.getItem('lot_size') || 15);
   const [callOptions, setCallOptions] = useState();
   const [putOptions, setPutOptions] = useState();
   const [optionContract, setOptionContract] = useState();
   const [optionChainMargin, setOptionChainMargin] = useState();
   const [filteredOptionsMargin, setFilteredOptionsMargin] = useState();
   const [error, setError] = useState("");
-  const [lastClickedTime, setLastClickedTime] = useState(
-    localStorage.getItem("lastClickedTime")
-      ? parseInt(localStorage.getItem("lastClickedTime"), 10)
-      : null
-  );
   const token = localStorage?.getItem("access_token");
   const contractUrl = "/option/contract";
   const chainUrl = "/option/chain";
@@ -176,28 +171,15 @@ export default function OptionChain() {
               ?.sort((a, b) => b?.maxProfitPercentage - a?.maxProfitPercentage)
           );
           setLoadingChain(false);
-          const currentTime = Date.now();
-          setLastClickedTime(currentTime);
-          localStorage.setItem("lastClickedTime", currentTime);
         })
         .catch((error) => {
           console.log(error);
-          setLastClickedTime(null);
-          localStorage.setItem("lastClickedTime", null);
           setLoadingChain(false);
           setError("Something went wrong");
         });
     }
   }
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (lastClickedTime && Date.now() - lastClickedTime >= 300000) {
-        setLastClickedTime(null);
-        localStorage.removeItem("lastClickedTime");
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [lastClickedTime]);
+
   useEffect(() => {
     getExpirtDates();
   }, []);
@@ -280,7 +262,7 @@ export default function OptionChain() {
             <input
               type="number"
               value={lotSize}
-              onChange={(e) => setLotSize(e.target.value)}
+              onChange={(e) =>{ setLotSize(e.target.value); localStorage.setItem('lot_size', e.target.value)}}
               className="bg-gray-100 text-gray-700 px-3 py-2 border border-gray-300 rounded-md w-15"
               placeholder="Lot Size"
             />
@@ -307,7 +289,7 @@ export default function OptionChain() {
               ))}
             </select>
             <button
-              onClick={lastClickedTime ? null : getOptionChainData}
+              onClick={getOptionChainData}
               className="bg-gray-100 text-gray-700 px-3 py-2 border border-gray-300 rounded-md flex items-center gap-1"
             >
               <RefreshCw size={16} />
