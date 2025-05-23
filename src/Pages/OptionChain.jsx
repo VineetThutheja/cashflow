@@ -28,7 +28,7 @@ export default function OptionChain() {
   const [loadingChain, setLoadingChain] = useState(true);
   const [instruments, setInstruments] = useState("all_fno");
   const [expiryDates, setExpiryDates] = useState();
-  const [expiry, setExpiry] = useState();
+  const [expiry, setExpiry] = useState(localStorage.getItem('currentExpiryDate'));
   const [lotSize, setLotSize] = useState(localStorage.getItem('lot_size') || 15);
   const [callOptions, setCallOptions] = useState();
   const [putOptions, setPutOptions] = useState();
@@ -59,7 +59,8 @@ export default function OptionChain() {
       const dates = extractUniqueExpiry(response?.data).sort();
       const sortedDates = dates?.sort((a, b) => new Date(a.value) - new Date(b.value));
       setExpiryDates(sortedDates);
-      setExpiry(sortedDates[0]?.value);
+      setExpiry(localStorage.getItem('currentExpiryDate') || sortedDates[0]?.value);
+      !localStorage.getItem('currentExpiryDate') && localStorage.setItem('currentExpiryDate', sortedDates[0]?.value);
       setLoading(false);
     } catch (error) {
       if (error?.status === 401) {
@@ -186,7 +187,9 @@ export default function OptionChain() {
   }, []);
   useEffect(() => {
     const optionContractData = localStorage.getItem("option_contract");
-    if (!optionContractData && expiry) {
+    const currentExpiryDate = localStorage.getItem("currentExpiryDate");
+    if ((!optionContractData && expiry) || currentExpiryDate!=expiry) {
+      setLoadingChain(true)
       const optionContractPromise = AllFNO?.map((n50) =>
         limiter.schedule(() =>
           axios?.get(
@@ -205,6 +208,7 @@ export default function OptionChain() {
             };
           });
           localStorage.setItem("option_contract", JSON.stringify(chainData));
+          localStorage.setItem("currentExpiryDate", expiry);
           setOptionContract(chainData);
         })
         .catch((error) => {
