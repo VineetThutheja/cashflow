@@ -11,27 +11,27 @@
     const putOptions = [];
   
     data1.forEach(item => {
-      const underlyingData = data2Map.get(item.underlying_key);
+      const underlyingData = data2Map.get(item?.underlying_key);
       if (underlyingData) {
-        const priceDifference = ((item.strike_price - item.underlying_spot_price) / item.underlying_spot_price) * 100;
+        const priceDifference = ((item?.strike_price - item?.underlying_spot_price) / item?.underlying_spot_price) * 100;
         
-        if (item.call_options && priceDifference >= percentageThreshold && item.call_options?.market_data?.ltp>0) {
+        if (item?.call_options && priceDifference >= percentageThreshold && item?.call_options?.market_data?.ltp>0) {
           callOptions.push({
-            ...item.call_options,
+            ...item?.call_options,
             underlying_info: underlyingData,
-            expiry: item.expiry,
-            strike_price: item.strike_price,
-            underlying_spot_price: item.underlying_spot_price,
+            expiry: item?.expiry,
+            strike_price: item?.strike_price,
+            underlying_spot_price: item?.underlying_spot_price,
             instrument_type: "CE"
           });
         }
-        if (item.put_options && priceDifference <= -percentageThreshold && item.put_options?.market_data?.ltp>0) {
+        if (item?.put_options && priceDifference <= -percentageThreshold && item?.put_options?.market_data?.ltp>0) {
           putOptions.push({
-            ...item.put_options,
+            ...item?.put_options,
             underlying_info: underlyingData,
-            expiry: item.expiry,
-            strike_price: item.strike_price,
-            underlying_spot_price: item.underlying_spot_price,
+            expiry: item?.expiry,
+            strike_price: item?.strike_price,
+            underlying_spot_price: item?.underlying_spot_price,
             instrument_type: "PE"
           });
         }
@@ -50,7 +50,7 @@
   }
 
   export function extractUniqueExpiry(response) {
-    const uniqueExpirySet = new Set(response.data.map(item => item.expiry));
+    const uniqueExpirySet = new Set(response.data.map(item => item?.expiry));
     
     return [...uniqueExpirySet].map(expiry => ({
       value: expiry,
@@ -61,7 +61,7 @@
  export function filterUniqueUnderlying(data) {
     const seen = new Set();
     return data.filter(item => {
-      const underlyingKey = item.underlying_info.instrument_key;
+      const underlyingKey = item?.underlying_info?.instrument_key;
       if (!seen.has(underlyingKey)) {
         seen.add(underlyingKey);
         return true;

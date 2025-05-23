@@ -80,10 +80,10 @@ export default function OptionChain() {
         )
       )
     );
-    Promise.all(optionChainPromise)
-      .then((responses) => {
+    Promise.allSettled(optionChainPromise)
+      .then((responses) => {        
         const { callOptions, putOptions } = mergeData(
-          responses?.map((c) => c?.data?.data)?.flat(),
+          responses?.filter((c)=>c?.status==='fulfilled')?.map((c) => c?.value?.data?.data)?.flat(),
           AllFNO,
           lotSize
         );
@@ -93,10 +93,10 @@ export default function OptionChain() {
               callOptions?.sort(
                 (a, b) =>
                   b?.market_data?.bid_price *
-                    optionContract[b?.underlying_info?.instrument_key]
+                    optionContract?.[b?.underlying_info?.instrument_key]
                       ?.lot_size -
                   a?.market_data?.bid_price *
-                    optionContract[a?.underlying_info?.instrument_key]?.lot_size
+                    optionContract?.[a?.underlying_info?.instrument_key]?.lot_size
               )
             )
           );
@@ -106,10 +106,10 @@ export default function OptionChain() {
               putOptions?.sort(
                 (a, b) =>
                   b?.market_data?.bid_price *
-                    optionContract[b?.underlying_info?.instrument_key]
+                    optionContract?.[b?.underlying_info?.instrument_key]
                       ?.lot_size -
                   a?.market_data?.bid_price *
-                    optionContract[a?.underlying_info?.instrument_key]?.lot_size
+                    optionContract?.[a?.underlying_info?.instrument_key]?.lot_size
               )
             )
           );
@@ -120,10 +120,10 @@ export default function OptionChain() {
         setError("Something went wrong");
       });
   }
-  async function getOptionChainMargin(options) {
+  async function getOptionChainMargin(options) {    
     const instruments = options?.map((fo) => ({
       instrument_key: fo?.instrument_key,
-      quantity: optionContract[fo?.underlying_info?.instrument_key]?.lot_size,
+      quantity: optionContract?.[fo?.underlying_info?.instrument_key]?.lot_size,
       transaction_type: "SELL",
       product: "D",
     }));
@@ -141,10 +141,10 @@ export default function OptionChain() {
           )
         );
       }
-      Promise.all(marginPromise)
+      Promise.allSettled(marginPromise)
         .then((responses) => {
-          const margins = responses
-            ?.map((res) => res?.data?.data?.margins)
+          const margins = responses?.filter((c)=>c?.status==='fulfilled')
+            ?.map((res) => res?.value?.data?.data?.margins)
             ?.flat();
           setOptionChainMargin(
             margins
@@ -154,13 +154,13 @@ export default function OptionChain() {
                   ...options[index],
                   maxProfit: (
                     options[index]?.market_data?.bid_price *
-                    optionContract[
+                    optionContract?.[
                       options?.[index]?.underlying_info?.instrument_key
                     ]?.lot_size
                   ).toFixed(2),
                   maxProfitPercentage: (
                     ((options[index]?.market_data?.bid_price *
-                      optionContract[
+                      optionContract?.[
                         options?.[index]?.underlying_info?.instrument_key
                       ]?.lot_size) /
                       margin?.total_margin) *
@@ -194,12 +194,12 @@ export default function OptionChain() {
           )
         )
       );
-      Promise.all(optionContractPromise)
+      Promise.allSettled(optionContractPromise)
         .then((responses) => {
           const chainData = {};
-          responses.forEach((contract) => {
-            chainData[contract?.data?.data[0]?.underlying_key] = {
-              lot_size: contract?.data?.data?.[0]?.lot_size,
+          responses?.filter((c)=>c?.status==='fulfilled').forEach((contract) => {
+            chainData[contract?.value?.data?.data[0]?.underlying_key] = {
+              lot_size: contract?.value?.data?.data?.[0]?.lot_size,
             };
           });
           localStorage.setItem("option_contract", JSON.stringify(chainData));
