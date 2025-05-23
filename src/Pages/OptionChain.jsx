@@ -56,7 +56,9 @@ export default function OptionChain() {
         `${baseUrl}${contractUrl}?instrument_key=NSE_EQ|INE002A01018`,
         { headers }
       );
-      const dates = extractUniqueExpiry(response?.data).reverse();
+      const dates = extractUniqueExpiry(response?.data).sort();
+      console.log('dates', dates);
+      
       setExpiryDates(dates);
       setExpiry(dates[0]?.value);
       setLoading(false);
@@ -121,7 +123,7 @@ export default function OptionChain() {
       });
   }
   async function getOptionChainMargin(options) {    
-    const instruments = options?.map((fo) => ({
+    const instruments = options?.filter(fo=>optionContract?.[fo?.underlying_info?.instrument_key]?.lot_size)?.map((fo) => ({
       instrument_key: fo?.instrument_key,
       quantity: optionContract?.[fo?.underlying_info?.instrument_key]?.lot_size,
       transaction_type: "SELL",
@@ -197,7 +199,8 @@ export default function OptionChain() {
       Promise.allSettled(optionContractPromise)
         .then((responses) => {
           const chainData = {};
-          responses?.filter((c)=>c?.status==='fulfilled').forEach((contract) => {
+          responses?.filter((c)=>c?.status==='fulfilled' && c?.value?.data?.data[0]?.underlying_key).forEach((contract) => {
+
             chainData[contract?.value?.data?.data[0]?.underlying_key] = {
               lot_size: contract?.value?.data?.data?.[0]?.lot_size,
             };
