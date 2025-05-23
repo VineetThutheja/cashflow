@@ -57,10 +57,9 @@ export default function OptionChain() {
         { headers }
       );
       const dates = extractUniqueExpiry(response?.data).sort();
-      console.log('dates', dates);
-      
-      setExpiryDates(dates);
-      setExpiry(dates[0]?.value);
+      const sortedDates = dates?.sort((a, b) => new Date(a.value) - new Date(b.value));
+      setExpiryDates(sortedDates);
+      setExpiry(sortedDates[0]?.value);
       setLoading(false);
     } catch (error) {
       if (error?.status === 401) {
